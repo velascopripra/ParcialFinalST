@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+
+  flask-app:
+    build:
+      context: .
+      dockerfile: docker/flask/Dockerfile  
+    container_name: flask-app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DB=webappdb
+    restart: always
+
+  apache:
+    build: ./docker/apache
+    container_name: apache
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - flask-app
+    restart: always
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: webappdb
+    volumes:    
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql
+    restart: always
+
+volumes:
+  mysql_data:
+

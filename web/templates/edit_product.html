@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5 pt-4">
+    <h2>Edit Product</h2>
+    <a href="/products" class="btn btn-secondary mb-3">Back to Products</a>
+
+    <form id="edit-product-form">
+        <input type="hidden" id="product-id" value="{{ id }}">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <input type="text" id="description" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="number" id="price" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="stock">Stock</label>
+            <input type="number" id="stock" class="form-control" required>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="updateProduct()">Save Changes</button>
+    </form>
+</div>
+
+<script src="/static/products.js"></script>
+<script>
+    const productId = {{ id }};
+    fetch(`/api/products/${productId}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('product-id').value = data.id;
+            document.getElementById('name').value = data.name;
+            document.getElementById('description').value = data.description;
+            document.getElementById('price').value = data.price;
+            document.getElementById('stock').value = data.stock;
+        })
+        .catch(error => console.error('Error:', error));
+</script>
+</body>
+</html>
+
